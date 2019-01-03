@@ -1,17 +1,15 @@
-'use strict';
-
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 mongoose.connect(
   'mongodb://localhost:27017/course-api',
-  { useNewUrlParser: true }
+  { useNewUrlParser: true },
 );
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.once('open', () => {
   console.log('Connection successful');
 });
 
@@ -28,7 +26,7 @@ app.use(morgan('dev'));
 // send a friendly greeting for the root route
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to the Course Review API'
+    message: 'Welcome to the Course Review API',
   });
 });
 
@@ -40,7 +38,7 @@ app.get('/', (req, res) => {
 // send 404 if no other route matched
 app.use((req, res) => {
   res.status(404).json({
-    message: 'Route Not Found'
+    message: 'Route Not Found',
   });
 });
 
@@ -49,7 +47,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
     message: err.message,
-    error: {}
+    error: {},
   });
 });
 
