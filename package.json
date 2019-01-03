@@ -9,11 +9,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^5.11.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
     "nodemon": "^1.17.5"
   },
   "dependencies": {
     "express": "^4.16.3",
     "mongoose": "^5.4.1",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "prettier-eslint": "^8.8.2"
   }
 }
