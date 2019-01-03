@@ -3,6 +3,17 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
+var mongoose = require('mongoose');
+
+mongoose.connect(
+  'mongodb://localhost:27017/course-api',
+  { useNewUrlParser: true }
+);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('Connection successful');
+});
 
 const app = express();
 
@@ -30,8 +41,8 @@ app.get('/', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     message: 'Route Not Found'
-  })
-})
+  });
+});
 
 // global error handler
 app.use((err, req, res, next) => {
