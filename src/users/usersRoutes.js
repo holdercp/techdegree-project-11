@@ -1,5 +1,7 @@
 const router = require('express').Router();
 
+const User = require('./usersModel');
+
 // users/
 router
   .route('/')
@@ -8,9 +10,12 @@ router
       result: 'Returns the currently authenticated user',
     });
   })
-  .post((req, res) => {
-    res.json({
-      result: 'Creates a user, sets the Location header to "/", and returns no content',
+  .post((req, res, next) => {
+    User.create(req.body, (err) => {
+      if (err) return next(err);
+
+      res.location('/');
+      return res.send(201, null);
     });
   });
 
