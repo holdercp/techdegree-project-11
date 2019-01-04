@@ -2,6 +2,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const apiRoutes = require('./api/apiRoutes');
 
 mongoose.connect(
   'mongodb://localhost:27017/course-api',
@@ -10,7 +11,7 @@ mongoose.connect(
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-  console.log('Connection successful');
+  console.log('Database connection successful');
 });
 
 const app = express();
@@ -22,6 +23,7 @@ app.set('port', process.env.PORT || 5000);
 app.use(morgan('dev'));
 
 // TODO add additional routes here
+app.use('/api', apiRoutes);
 
 // send a friendly greeting for the root route
 app.get('/', (req, res) => {
