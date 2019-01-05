@@ -8,7 +8,7 @@ const CourseSchema = new Schema({
     type: String,
     required: true,
   },
-  decription: {
+  description: {
     type: String,
     required: true,
   },
@@ -41,4 +41,4 @@ const CourseSchema = new Schema({
 
 const Course = mongoose.model('Course', CourseSchema);
 
-module.exports.Course = Course;
+module.exports = Course;

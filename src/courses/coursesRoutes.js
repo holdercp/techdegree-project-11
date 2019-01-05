@@ -1,16 +1,25 @@
 const router = require('express').Router();
 
+const Course = require('./coursesModel');
+
 // courses/
 router
   .route('/')
-  .get((req, res) => {
-    res.json({
-      result: 'Returns the Course "_id" and "title" properties',
-    });
+  .get((req, res, next) => {
+    Course.find({})
+      .select('_id title')
+      .exec((err, courses) => {
+        if (err) return next(err);
+
+        return res.json(courses);
+      });
   })
-  .post((req, res) => {
-    res.json({
-      result: 'Creates a course, sets the Location header, and returns no content',
+  .post((req, res, next) => {
+    Course.create(req.body, (err) => {
+      if (err) return next(err);
+
+      res.location('/');
+      return res.status(201).send(null);
     });
   });
 
