@@ -15,7 +15,7 @@ router
       if (err) return next(err);
 
       res.location('/');
-      return res.send(201, null);
+      return res.status(201).send(null);
     });
   });
 
