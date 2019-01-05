@@ -16,7 +16,11 @@ router
   })
   .post((req, res, next) => {
     Course.create(req.body, (err) => {
-      if (err) return next(err);
+      if (err) {
+        /* eslint-disable no-param-reassign */
+        err.status = 400;
+        return next(err);
+      }
 
       res.location('/');
       return res.status(201).send(null);
@@ -35,7 +39,11 @@ router
   })
   .put((req, res, next) => {
     Course.findByIdAndUpdate(req.params.courseId, { $set: req.body }, (err, course) => {
-      if (err) return next(err);
+      if (err) {
+        /* eslint-disable no-param-reassign */
+        err.status = 400;
+        return next(err);
+      }
 
       if (course) return res.status(204).send(null);
 

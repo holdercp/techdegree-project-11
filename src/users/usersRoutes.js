@@ -12,7 +12,11 @@ router
   })
   .post((req, res, next) => {
     User.create(req.body, (err) => {
-      if (err) return next(err);
+      if (err) {
+        /* eslint-disable no-param-reassign */
+        err.status = 400;
+        return next(err);
+      }
 
       res.location('/');
       return res.status(201).send(null);
