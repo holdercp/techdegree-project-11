@@ -26,14 +26,20 @@ router
 // courses/:courseId
 router
   .route('/:courseId')
-  .get((req, res) => {
-    res.json({
-      result: 'Returns all Course properties and related documents for the provided course ID',
+  .get((req, res, next) => {
+    Course.findById(req.params.courseId, (err, course) => {
+      if (err) return next(err);
+
+      return res.json(course);
     });
   })
-  .put((req, res) => {
-    res.json({
-      result: 'Updates a course and returns no content',
+  .put((req, res, next) => {
+    Course.findByIdAndUpdate(req.params.courseId, { $set: req.body }, (err, course) => {
+      if (err) return next(err);
+
+      if (course) return res.status(204).send(null);
+
+      return next(new Error('Course not found.'));
     });
   });
 
