@@ -20,6 +20,27 @@ const UserSchema = new Schema({
   },
 });
 
+UserSchema.statics.authenticate = function authenticateUser(emailAddress, password, callback) {
+  this.findOne({ emailAddress }, (err, user) => {
+    if (err) return callback(err);
+
+    if (!user) {
+      const error = new Error('User not found.');
+      error.status = 400;
+      return callback(error);
+    }
+
+    const hash = user.password;
+    return bcrypt.compare(password, hash).then((res) => {
+      if (res) return callback(null, user);
+
+      const error = new Error('Invalid password.');
+      error.status = 400;
+      return callback(error);
+    });
+  });
+};
+
 UserSchema.pre('save', function hashPassword(next) {
   const user = this;
   bcrypt
