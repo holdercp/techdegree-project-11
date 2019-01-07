@@ -1,6 +1,7 @@
 const router = require('express').Router();
-
+const authorize = require('../middleware/authorize');
 const Course = require('./coursesModel');
+const Review = require('../reviews/reviewsModel');
 
 // courses/
 router
@@ -14,7 +15,7 @@ router
         return res.json(courses);
       });
   })
-  .post((req, res, next) => {
+  .post(authorize, (req, res, next) => {
     Course.create(req.body, (err) => {
       if (err) {
         /* eslint-disable no-param-reassign */
@@ -34,10 +35,16 @@ router
     Course.findById(req.params.courseId, (err, course) => {
       if (err) return next(err);
 
+      if (!course) {
+        const error = new Error('Course not found.');
+        error.status = 404;
+        return next(error);
+      }
+
       return res.json(course);
     });
   })
-  .put((req, res, next) => {
+  .put(authorize, (req, res, next) => {
     Course.findByIdAndUpdate(req.params.courseId, { $set: req.body }, (err, course) => {
       if (err) {
         /* eslint-disable no-param-reassign */
@@ -45,18 +52,33 @@ router
         return next(err);
       }
 
-      if (course) return res.status(204).send(null);
+      if (!course) {
+        const error = new Error('Course not found.');
+        error.status = 404;
+        return next(error);
+      }
 
-      return next(new Error('Course not found.'));
+      return res.status(204).send(null);
     });
   });
 
 // courses/:courseId/reviews
-router.post('/:courseId/reviews', (req, res) => {
-  res.json({
-    result:
-      'Creates a review for the specified course ID, sets the Location header to the related course, and returns no content',
-  });
+router.post('/:courseId/reviews', authorize, (req, res, next) => {
+  Review.create(req.body)
+    .then((review) => {
+      Course.findByIdAndUpdate(req.params.courseId, { $push: { reviews: review } }).then((course) => {
+        if (!course) {
+          const err = new Error('Course not found.');
+          err.status = 404;
+          return next(err);
+        }
+        res.location('/');
+        return res.status(201).send(null);
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const CourseSchema = new Schema({
-  users: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   title: {
     type: String,
     required: true,
@@ -17,14 +17,10 @@ const CourseSchema = new Schema({
   steps: [
     {
       stepNumber: Number,
-    },
-    {
       title: {
         type: String,
         required: true,
       },
-    },
-    {
       description: {
         type: String,
         required: true,

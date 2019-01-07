@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ReviewSchema = new Schema({
-  users: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   postedOn: {
     type: Date,
     default: Date.now(),
@@ -19,4 +19,4 @@ const ReviewSchema = new Schema({
 
 const Review = mongoose.model('Review', ReviewSchema);
 
-module.exports.Review = Review;
+module.exports = Review;

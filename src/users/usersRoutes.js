@@ -1,14 +1,12 @@
 const router = require('express').Router();
-
+const authorize = require('../middleware/authorize');
 const User = require('./usersModel');
 
 // users/
 router
   .route('/')
-  .get((req, res) => {
-    res.json({
-      result: 'Returns the currently authenticated user',
-    });
+  .get(authorize, (req, res) => {
+    res.json(req.body.user);
   })
   .post((req, res, next) => {
     User.create(req.body, (err) => {
