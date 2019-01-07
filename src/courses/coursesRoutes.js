@@ -64,16 +64,27 @@ router
 
 // courses/:courseId/reviews
 router.post('/:courseId/reviews', authorize, (req, res, next) => {
-  Review.create(req.body)
-    .then((review) => {
-      Course.findByIdAndUpdate(req.params.courseId, { $push: { reviews: review } }).then((course) => {
-        if (!course) {
-          const err = new Error('Course not found.');
-          err.status = 404;
-          return next(err);
-        }
-        res.location('/');
-        return res.status(201).send(null);
+  Course.findById(req.params.courseId)
+    .then((course) => {
+      if (!course) {
+        const err = new Error('Course not found.');
+        err.status = 404;
+        return next(err);
+      }
+
+      if (course.user.toString() === req.body.user.id) {
+        const err = new Error('You cannot review your own course.');
+        err.status = 400;
+        return next(err);
+      }
+
+      return Review.create(req.body).then((review) => {
+        course.reviews.push(review);
+        course.save((err) => {
+          if (err) return next(err);
+          res.location('/');
+          return res.status(201).send(null);
+        });
       });
     })
     .catch((err) => {
