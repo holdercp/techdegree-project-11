@@ -32,17 +32,20 @@ router
 router
   .route('/:courseId')
   .get((req, res, next) => {
-    Course.findById(req.params.courseId, (err, course) => {
-      if (err) return next(err);
+    Course.findById(req.params.courseId)
+      .populate('user', 'fullName')
+      .populate('reviews')
+      .exec((err, course) => {
+        if (err) return next(err);
 
-      if (!course) {
-        const error = new Error('Course not found.');
-        error.status = 404;
-        return next(error);
-      }
+        if (!course) {
+          const error = new Error('Course not found.');
+          error.status = 404;
+          return next(error);
+        }
 
-      return res.json(course);
-    });
+        return res.json(course);
+      });
   })
   .put(authorize, (req, res, next) => {
     Course.findByIdAndUpdate(req.params.courseId, { $set: req.body }, (err, course) => {

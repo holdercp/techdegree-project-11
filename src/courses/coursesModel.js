@@ -16,6 +16,7 @@ const CourseSchema = new Schema({
   materialsNeeded: String,
   steps: [
     {
+      _id: false,
       stepNumber: Number,
       title: {
         type: String,
