@@ -22,9 +22,11 @@ app.set('port', process.env.PORT || 5000);
 
 // morgan gives us http request logging
 app.use(morgan('dev'));
+
+// parse json
 app.use(bodyParser.json());
 
-// TODO add additional routes here
+// All api routes are included in the apiRoutes file
 app.use('/api', apiRoutes);
 
 // send a friendly greeting for the root route
